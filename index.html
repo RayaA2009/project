@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prolog животни с различни правила и GIF</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 10px;
+      background: #f9f9f9;
+      color: #333;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 20px;
+    }
+
+    .instructions {
+      text-align: left;
+      font-size: 15px;
+      margin-bottom: 15px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      font-family: monospace;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: 2px solid #007acc;
+      padding: 8px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #007acc;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    button:hover {
+      background-color: #005f99;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 17px;
+      font-weight: bold;
+      color: #004a99;
+    }
+
+    .animal-container {
+      margin-top: 20px;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #d0e8ff;
+      border-radius: 12px;
+      box-shadow: 0 0 5px #a0c4ff;
+      min-height: 160px;
+    }
+
+    .animal-gif {
+      width: 100%;
+      max-width: 200px;
+      border-radius: 12px;
+      box-shadow: 0 0 8px #005f99;
+    }
+
+    @media (min-width: 600px) {
+      body {
+        max-width: 700px;
+        margin: 30px auto;
+      }
+
+      textarea {
+        max-width: 600px;
+      }
+
+      button {
+        width: auto;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Задание: Prolog животни с различни правила и GIF визуализация</h1>
+
+  <p class="instructions">
+    Създайте приложение, което използва <strong>Пролог</strong> за логическо извеждане на животни.<br />
+    Въведете Prolog заявка, програмата ще търси животно и ще покаже GIF картинка.<br />
+    <br />
+    Примерни заявки:<br />
+    <code>is_mammal(X).</code><br />
+    <code>is_big(X).</code><br />
+    <code>is_predator(X).</code>
+  </p>
+
+  <textarea id="prolog-input"></textarea><br />
+  <button onclick="runProlog()">Изпълни</button>
+
+  <div id="result"></div>
+  <div class="animal-container" id="animal-animation"></div>
+
+  <script src="https://unpkg.com/tau-prolog"></script>
+  <script>
+    const session = pl.create();
+
+    const knowledge = `
+      animal(lion).
+      animal(elephant).
+      animal(tiger).
+
+      mammal(lion).
+      big(elephant).
+      predator(tiger).
+
+      is_mammal(X) :- mammal(X).
+      is_big(X) :- big(X).
+      is_predator(X) :- predator(X).
+    `;
+
+    session.consult(knowledge);
+
+    const animalAnimations = {
+      lion: '<img src="1" class="animal-gif" alt="Лъв анимация" />',
+      elephant: '<img src="2" class="animal-gif" alt="Слон анимация" />',
+      tiger: '<img src="3" class="animal-gif" alt="Тигър анимация" />',
+      crocodile: '<img src="4" class="animal-gif" alt="Крокодил анимация" />',
+      kangaroo: '<img src="5" class="animal-gif" alt="Кенгуру анимация" />',
+      owl: '<img src="6" class="animal-gif" alt="Бухал анимация" />'
+    };
+
+    function runProlog() {
+      const input = document.getElementById("prolog-input").value;
+      const resultDiv = document.getElementById("result");
+      const animDiv = document.getElementById("animal-animation");
+
+      resultDiv.innerHTML = "";
+      animDiv.innerHTML = "";
+
+      session.query(input);
+      session.answers(answer => {
+        if (answer === false) {
+          resultDiv.innerHTML += `<p>Няма повече резултати.</p>`;
+          return;
+        }
+
+        const str = pl.format_answer(answer);
+        if (str === "false.") {
+          resultDiv.innerHTML = "<p>Няма резултати за тази заявка.</p>";
+          return;
+        }
+
+        resultDiv.innerHTML += `<p>${str}</p>`;
+
+        const match = str.match(/X = (\w+)/);
+        if (match) {
+          const animal = match[1];
+          if (animalAnimations[animal]) {
+            animDiv.innerHTML = animalAnimations[animal];
+          } else {
+            animDiv.innerHTML = "<p>Няма GIF за това животно.</p>";
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
