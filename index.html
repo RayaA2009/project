@@ -104,16 +104,6 @@
 <body>
   <h1>Задание: Prolog животни с различни правила и GIF визуализация</h1>
 
-  <p class="instructions">
-    Създайте приложение, което използва <strong>Пролог</strong> за логическо извеждане на животни.<br />
-    Въведете Prolog заявка, програмата ще търси животно и ще покаже GIF картинка.<br />
-    <br />
-    Примерни заявки:<br />
-    <code>is_mammal(X).</code><br />
-    <code>is_big(X).</code><br />
-    <code>is_predator(X).</code>
-  </p>
-
   <textarea id="prolog-input"></textarea><br />
   <button onclick="runProlog()">Изпълни</button>
 
@@ -125,28 +115,28 @@
     const session = pl.create();
 
     const knowledge = `
-      animal(lion).
-      animal(elephant).
-      animal(tiger).
+      car(bmw).
+      car(tesla).
+      car(ford).
 
-      mammal(lion).
-      big(elephant).
-      predator(tiger).
+      electric(tesla).
+      fast(bmw).
+      offroad(ford).
 
-      is_mammal(X) :- mammal(X).
-      is_big(X) :- big(X).
-      is_predator(X) :- predator(X).
+      is_electric(X) :- electric(X).
+      is_fast(X) :- fast(X).
+      is_offroad(X) :- offroad(X).
     `;
 
     session.consult(knowledge);
 
     const animalAnimations = {
-      lion: '<img src="1" class="animal-gif" alt="Лъв анимация" />',
-      elephant: '<img src="2" class="animal-gif" alt="Слон анимация" />',
-      tiger: '<img src="3" class="animal-gif" alt="Тигър анимация" />',
-      crocodile: '<img src="4" class="animal-gif" alt="Крокодил анимация" />',
-      kangaroo: '<img src="5" class="animal-gif" alt="Кенгуру анимация" />',
-      owl: '<img src="6" class="animal-gif" alt="Бухал анимация" />'
+      bmw: '<img src="1" class="animal-gif" alt="BMW" />',
+      tesla: '<img src="2" class="animal-gif" alt="Tesla" />',
+      ford: '<img src="3" class="animal-gif" alt="Ford" />',
+      jeep: '<img src="4" class="animal-gif" alt="Jeep" />',
+      audi: '<img src="5" class="animal-gif" alt="Audi" />',
+      lada: '<img src="6" class="animal-gif" alt="Lada" />'
     };
 
     function runProlog() {
